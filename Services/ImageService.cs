@@ -43,7 +43,7 @@ public class ImageService(ILogger<GreeterService> logger) : Image.ImageBase
 
         if (MimeTypes.GetMimeType(filename) == "image/gif")
         {
-            using var stream = GetStream(pathObj);
+            using var stream = Utility.ReadFile(pathObj);
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             var data = ms.ToArray();
@@ -54,7 +54,7 @@ public class ImageService(ILogger<GreeterService> logger) : Image.ImageBase
 
         else
         {
-            using var stream = GetStream(pathObj);
+            using var stream = Utility.ReadFile(pathObj);
             using var image = NetVips.Image.NewFromStream(stream);
 
             byte[] output;
@@ -79,7 +79,7 @@ public class ImageService(ILogger<GreeterService> logger) : Image.ImageBase
 
     public byte[] CreateListThumbnail(string path, int width = Configurations.ListThumbnailWidth, int height = Configurations.ListThumbnailHeight)
     {
-        using var stream = GetStream(new PosixPath(path));
+        using var stream = Utility.ReadFile(new PosixPath(path));
         using var image = NetVips.Image.NewFromStream(stream);
 
         var scale =
@@ -92,7 +92,7 @@ public class ImageService(ILogger<GreeterService> logger) : Image.ImageBase
 
     public byte[] CreateGridThumbnail(string path)
     {
-        using var stream = GetStream(new PosixPath(path));
+        using var stream = Utility.ReadFile(new PosixPath(path));
         using var image = NetVips.Image.NewFromStream(stream);
 
         using var thumb =
@@ -100,20 +100,6 @@ public class ImageService(ILogger<GreeterService> logger) : Image.ImageBase
                                  crop: NetVips.Enums.Interesting.Entropy);
 
         return thumb.WebpsaveBuffer();
-    }
-
-    private static Stream GetStream(PosixPath path)
-    {
-        var (physicalPath, archivePath, hasArchivePath) = PathUtility.SplitPathAfterArchiveFile(path);
-
-        if (hasArchivePath)
-        {
-            return ArchiveFS.ReadFile(physicalPath, archivePath);
-        }
-        else
-        {
-            return PhysicalFS.ReadFile(physicalPath);
-        }
     }
 
     private static async Task WriteStream(IServerStreamWriter<ImageStreamResponse> responseStream, byte[] data, string filename, string mimeType)

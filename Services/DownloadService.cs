@@ -2,6 +2,7 @@ using Grpc.Core;
 using Backend;
 using Backend.FileSystem;
 using PathLib;
+using Google.Protobuf;
 
 namespace Backend.Services;
 
@@ -15,7 +16,7 @@ public class DownloadService(ILogger<GreeterService> logger) : Download.Download
         var pathObj = new PosixPath(request.Path);
         var filename = pathObj.Filename;
 
-        using var stream = GetStream(pathObj);
+        using var stream = Utility.ReadFile(pathObj);
         using var ms = new MemoryStream();
         stream.CopyTo(ms);
         var data = ms.ToArray();
@@ -30,7 +31,7 @@ public class DownloadService(ILogger<GreeterService> logger) : Download.Download
         {
             var count = Math.Max(STREAM_SIZE, data.Length - i);
 
-            await responseStream.WriteAsync(new ImageStreamResponse
+            await responseStream.WriteAsync(new DownloadStreamResponse
             {
                 Filename = filename,
                 Size = count,
