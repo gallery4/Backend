@@ -8,10 +8,16 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\browse.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
+    <PackageReference Include="MimeTypes" Version="2.5.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="PathLib" Version="0.9.8" />
   </ItemGroup>
 
 </Project>

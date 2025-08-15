@@ -1,7 +1,6 @@
-﻿using PathLib;
+﻿using Backend;
+using PathLib;
 
-namespace GalleryBackend
-{
 public static class PathUtility
 {
     public static (PosixPath physicalPath, PosixPath archivePath, bool hasArchivePath)
@@ -47,8 +46,6 @@ public static class PathUtility
         {
             return true;
         }
-
         return false;
     }
-}
 }
