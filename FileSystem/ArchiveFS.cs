@@ -20,11 +20,7 @@ namespace Backend.FileSystem
             var files = new LinkedList<ListResponseItem>();
 
             var archivePathStr = archivePath.ToString();
-            if (archivePathStr == ".")
-            {
-                archivePathStr = "";
-            }
-
+        
             var response = new ListResponse
             {
                 Path = physicalPath.Join(archivePath).ToString(),
@@ -34,7 +30,7 @@ namespace Backend.FileSystem
             {
                 var entryPath = new PosixPath(e.Key);
 
-                if (entryPath.Directory == archivePathStr)
+                if (entryPath.Dirname == archivePathStr)
                 {
                     if (e.IsDirectory)
                     {
@@ -85,19 +81,6 @@ namespace Backend.FileSystem
                 ".cbr" => RarArchive.Open(path.ToString()),
                 _ => ArchiveFactory.Open(path.ToString())
             };
-        }
-
-        public static IResult SendFile(HttpContext http, PosixPath archivePath, PosixPath entryPath)
-        {
-            var disposition = new ContentDispositionHeaderValue(dispositionType: "inline");
-            disposition.SetHttpFileName(entryPath.Filename);
-
-            http.Response.Headers.ContentDisposition = disposition.ToString();
-
-            var steam = ReadFile(archivePath, entryPath);
-
-            return Results.Stream(steam, enableRangeProcessing: true,
-                                  contentType: MimeTypes.GetMimeType(entryPath.Filename));
         }
     }
 }

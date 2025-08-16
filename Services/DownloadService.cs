@@ -6,9 +6,9 @@ using Google.Protobuf;
 
 namespace Backend.Services;
 
-public class DownloadService(ILogger<GreeterService> logger) : Download.DownloadBase
+public class DownloadService(ILogger<DownloadService> logger) : Download.DownloadBase
 {
-    private readonly ILogger<GreeterService> _logger = logger;
+    private readonly ILogger<DownloadService> _logger = logger;
     const int STREAM_SIZE = 10 * 1024;
 
     public override async Task Get(GetRequest request, IServerStreamWriter<DownloadStreamResponse> responseStream, ServerCallContext context)

@@ -6,9 +6,9 @@ using Google.Protobuf;
 
 namespace Backend.Services;
 
-public class ImageService(ILogger<GreeterService> logger) : Image.ImageBase
+public class ImageService(ILogger<ImageService> logger) : Image.ImageBase
 {
-    private readonly ILogger<GreeterService> _logger = logger;
+    private readonly ILogger<ImageService> _logger = logger;
 
     const string MIME_TYPE = "images/webp";
     const int STREAM_SIZE = 10 * 1024;

@@ -5,9 +5,9 @@ using PathLib;
 
 namespace Backend.Services;
 
-public class BrowseService(ILogger<GreeterService> logger) : Browse.BrowseBase
+public class BrowseService(ILogger<BrowseService> logger) : Browse.BrowseBase
 {
-    private readonly ILogger<GreeterService> _logger = logger;
+    private readonly ILogger<BrowseService> _logger = logger;
 
     public override async Task<ListResponse> List(ListRequest request, ServerCallContext context)
     {
