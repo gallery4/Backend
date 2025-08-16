@@ -29,7 +29,7 @@ public class DownloadService(ILogger<DownloadService> logger) : Download.Downloa
     {
         for (int i = 0; i < data.Length; i += STREAM_SIZE)
         {
-            var count = Math.Max(STREAM_SIZE, data.Length - i);
+            var count = Math.Min(STREAM_SIZE, data.Length - i);
 
             await responseStream.WriteAsync(new DownloadStreamResponse
             {

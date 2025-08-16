@@ -20,6 +20,10 @@ public class ArchiveFS
         var files = new LinkedList<ListResponseItem>();
 
         var archivePathStr = archivePath.ToString();
+        if (archivePathStr == ".")
+        {
+            archivePathStr = "";
+        }
 
         var response = new ListResponse
         {
@@ -30,7 +34,7 @@ public class ArchiveFS
         {
             var entryPath = new PosixPath(e.Key);
 
-            if (entryPath.Dirname == archivePathStr)
+            if (entryPath.Directory == archivePathStr)
             {
                 var dateTime = e.LastModifiedTime ?? DateTime.Now;
 
