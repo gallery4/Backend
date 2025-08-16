@@ -17,7 +17,11 @@ public class ImageService(ILogger<ImageService> logger) : Image.ImageBase
         IServerStreamWriter<ImageStreamResponse> responseStream,
         ServerCallContext context)
     {
-        var data = CreateListThumbnail(request.Path);
+        var data = request.ListType switch 
+        {
+            ListType.List => CreateListThumbnail(request.Path),
+            _ => CreateGridThumbnail(request.Path)
+        };
         var filename = new PosixPath(request.Path).Filename;
 
         await WriteStream(responseStream, data, $"{filename}.thumb.webp", MIME_TYPE);

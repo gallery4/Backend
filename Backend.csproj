@@ -7,9 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\browse.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\image.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\download.proto" GrpcServices="Server" />
+    <Protobuf ProtoRoot="Protos" GrpcServices="Server" Include="Protos\browse.proto" />
+    <Protobuf ProtoRoot="Protos" GrpcServices="Server" Include="Protos\image.proto" />
+    <Protobuf ProtoRoot="Protos" GrpcServices="Server" Include="Protos\download.proto" />
+    <Protobuf ProtoRoot="Protos" GrpcServices="Server" Include="Protos\types.proto" />
   </ItemGroup>
 
   <ItemGroup>
