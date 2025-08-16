@@ -27,8 +27,7 @@ public static class PathUtility
 
     public static bool HasArchiveFileExt(string path)
     {
-        return path.EndsWith(".zip") || path.EndsWith(".cbz") || path.EndsWith(".rar") || path.EndsWith(".cbr") ||
-               path.EndsWith(".7z");
+        return HasArchiveFileExt(new PosixPath(path));
     }
 
     public static bool HasArchiveFileExt(PosixPath path)

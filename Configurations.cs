@@ -1,7 +1,5 @@
 ﻿using PathLib;
 
-namespace Backend
-{
 public static class Configurations
 {
     public static string BaseDirectory { get; } = "/data";
@@ -15,5 +13,4 @@ public static class Configurations
 
     public static int ViewImageWidth { get; } = 2048;
     public static int ViewImageHeight { get; } = 2048;
-}
 }
