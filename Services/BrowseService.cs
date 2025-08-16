@@ -11,16 +11,20 @@ public class BrowseService(ILogger<BrowseService> logger) : Browse.BrowseBase
 
     public override async Task<ListResponse> List(ListRequest request, ServerCallContext context)
     {
-        var (physicalPath, archivePath, hasArchivePath) =
-                   PathUtility.SplitPathAfterArchiveFile(new PosixPath(request.Path));
+        return await Task.Run(() =>
+        {
+            var (physicalPath, archivePath, hasArchivePath) =
+                               PathUtility.SplitPathAfterArchiveFile(new PosixPath(request.Path));
 
-        if (hasArchivePath)
-        {
-            return ArchiveFS.List(physicalPath, archivePath);
-        }
-        else
-        {
-            return PhysicalFS.List(physicalPath);
-        }
+            if (hasArchivePath)
+            {
+                return ArchiveFS.List(physicalPath, archivePath);
+            }
+            else
+            {
+                return PhysicalFS.List(physicalPath);
+            }
+        });
+
     }
 }

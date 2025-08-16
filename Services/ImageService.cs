@@ -20,18 +20,7 @@ public class ImageService(ILogger<ImageService> logger) : Image.ImageBase
         var data = CreateListThumbnail(request.Path);
         var filename = new PosixPath(request.Path).Filename;
 
-        for (int i = 0; i < data.Length; i += STREAM_SIZE)
-        {
-            var count = Math.Min(STREAM_SIZE, data.Length - i);
-
-            await responseStream.WriteAsync(new ImageStreamResponse
-            {
-                Filename = string.Format("{}.webp", filename),
-                ContentType = MIME_TYPE,
-                Size = count,
-                Data = ByteString.CopyFrom(data, i, count)
-            });
-        }
+        await WriteStream(responseStream, data, $"{filename}.thumb.webp", MIME_TYPE);
 
         return;
     }
@@ -71,7 +60,7 @@ public class ImageService(ILogger<ImageService> logger) : Image.ImageBase
                 output = thumb.WebpsaveBuffer();
             }
 
-            await WriteStream(responseStream, output, $"{filename}.webp", MIME_TYPE);
+            await WriteStream(responseStream, output, $"{filename}.view.webp", MIME_TYPE);
 
             return;
         }
