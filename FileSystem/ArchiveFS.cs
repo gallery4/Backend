@@ -32,12 +32,14 @@ public class ArchiveFS
 
             if (entryPath.Dirname == archivePathStr)
             {
+                var dateTime = e.LastModifiedTime ?? DateTime.Now;
+
                 if (e.IsDirectory)
                 {
                     directorySet.Add(new ListResponseItem
                     {
                         Name = physicalPath.Join(entryPath).ToString(),
-                        DateTime = Timestamp.FromDateTime(e.LastModifiedTime ?? DateTime.Now),
+                        DateTime = Timestamp.FromDateTime(dateTime.ToUniversalTime()),
                     });
                 }
                 else if (PathUtility.IsViewableFile(entryPath))
@@ -45,7 +47,7 @@ public class ArchiveFS
                     files.AddLast(new ListResponseItem
                     {
                         Name = physicalPath.Join(entryPath).ToString(),
-                        DateTime = Timestamp.FromDateTime(e.LastModifiedTime ?? DateTime.Now)
+                        DateTime = Timestamp.FromDateTime(dateTime.ToUniversalTime())
                     });
                 }
             }

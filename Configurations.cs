@@ -3,7 +3,7 @@
 public static class Configurations
 {
     public static string BaseDirectory { get; } = "./data";
-    public static PosixPath BaseDirectoryPath { get; } = new PosixPath(BaseDirectory);
+    public static PosixPath BaseDirectoryPath { get; } = new PosixPath(BaseDirectory).Resolve();
 
     public static int GridThumbnailWidth { get; } = 400;
     public static int GridThumbnailHeight { get; } = 300;

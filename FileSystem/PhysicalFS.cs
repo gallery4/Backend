@@ -23,7 +23,7 @@ public static class PhysicalFS
                 directories.AddLast(new ListResponseItem
                 {
                     Name = p.RelativeTo(Configurations.BaseDirectoryPath).ToString(),
-                    DateTime = Timestamp.FromDateTime(p.DirectoryInfo.LastWriteTime)
+                    DateTime = Timestamp.FromDateTime(p.DirectoryInfo.LastWriteTime.ToUniversalTime())
                 });
             }
             else
@@ -33,7 +33,7 @@ public static class PhysicalFS
                     archives.AddLast(new ListResponseItem
                     {
                         Name = p.RelativeTo(Configurations.BaseDirectoryPath).ToString(),
-                        DateTime = Timestamp.FromDateTime(p.FileInfo.LastWriteTime)
+                        DateTime = Timestamp.FromDateTime(p.FileInfo.LastWriteTime.ToUniversalTime())
                     });
                 }
                 else if (PathUtility.IsViewableFile(p))
@@ -41,7 +41,7 @@ public static class PhysicalFS
                     files.AddLast(new ListResponseItem
                     {
                         Name = p.RelativeTo(Configurations.BaseDirectoryPath).ToString(),
-                        DateTime = Timestamp.FromDateTime(p.FileInfo.LastWriteTime)
+                        DateTime = Timestamp.FromDateTime(p.FileInfo.LastWriteTime.ToUniversalTime())
                     });
                 }
             }
