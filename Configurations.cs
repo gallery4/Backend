@@ -2,7 +2,7 @@
 
 public static class Configurations
 {
-    public static string BaseDirectory { get; } = "/data";
+    public static string BaseDirectory { get; } = "./data";
     public static PosixPath BaseDirectoryPath { get; } = new PosixPath(BaseDirectory);
 
     public static int GridThumbnailWidth { get; } = 400;
