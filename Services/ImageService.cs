@@ -6,21 +6,25 @@ using PathLib;
 
 namespace Backend.Services;
 
-public class ImageService(ILogger<ImageService> logger) : Image.ImageBase
+public class ImageService
+(ILogger<ImageService> logger) : Image.ImageBase
 {
     private readonly ILogger<ImageService> _logger = logger;
 
     const string MIME_TYPE = "images/webp";
     const int STREAM_SIZE = 10 * 1024;
 
-    public override async Task Thumbnail(ThumbnailRequest request,
-        IServerStreamWriter<ImageStreamResponse> responseStream,
-        ServerCallContext context)
+    public override async Task Thumbnail(
+        ThumbnailRequest request, IServerStreamWriter<ImageStreamResponse> responseStream, ServerCallContext context)
     {
-        var data = request.ListType switch 
-        {
-            ListType.List => CreateListThumbnail(request.Path),
-            _ => CreateGridThumbnail(request.Path)
+        var data = request.ListType switch {
+            ListType.List => CreateListThumbnail(
+                request.Path, width: request.Width == 0 ? Configurations.ListThumbnailWidth : request.Width,
+                height: request.Height == 0 ? Configurations.ListThumbnailHeight : request.Height),
+
+            _ => CreateGridThumbnail(request.Path,
+                                     width: request.Width == 0 ? Configurations.GridThumbnailWidth : request.Width,
+                                     height: request.Height == 0 ? Configurations.GridThumbnailHeight : request.Height),
         };
         var filename = new PosixPath(request.Path).Filename;
 
@@ -29,7 +33,8 @@ public class ImageService(ILogger<ImageService> logger) : Image.ImageBase
         return;
     }
 
-    public override async Task View(ViewRequest request, IServerStreamWriter<ImageStreamResponse> responseStream, ServerCallContext context)
+    public override async Task View(ViewRequest request, IServerStreamWriter<ImageStreamResponse> responseStream,
+                                    ServerCallContext context)
     {
         var pathObj = new PosixPath(request.Path);
         var filename = pathObj.Filename;
@@ -70,7 +75,7 @@ public class ImageService(ILogger<ImageService> logger) : Image.ImageBase
         }
     }
 
-    public byte[] CreateListThumbnail(string path, int width = Configurations.ListThumbnailWidth, int height = Configurations.ListThumbnailHeight)
+    public byte[] CreateListThumbnail(string path, int width, int height)
     {
         using var stream = Utility.ReadFile(new PosixPath(path));
         using var image = NetVips.Image.NewFromStream(stream);
@@ -83,31 +88,26 @@ public class ImageService(ILogger<ImageService> logger) : Image.ImageBase
         return thumb.WebpsaveBuffer();
     }
 
-    public byte[] CreateGridThumbnail(string path)
+    public byte[] CreateGridThumbnail(string path, int width, int height)
     {
         using var stream = Utility.ReadFile(new PosixPath(path));
         using var image = NetVips.Image.NewFromStream(stream);
 
-        using var thumb =
-            image.ThumbnailImage(width: Configurations.GridThumbnailWidth, height: Configurations.GridThumbnailHeight,
-                                 crop: NetVips.Enums.Interesting.Entropy);
+        using var thumb = image.ThumbnailImage(width, height, crop: NetVips.Enums.Interesting.Entropy);
 
         return thumb.WebpsaveBuffer();
     }
 
-    private static async Task WriteStream(IServerStreamWriter<ImageStreamResponse> responseStream, byte[] data, string filename, string mimeType)
+    private static async Task WriteStream(IServerStreamWriter<ImageStreamResponse> responseStream, byte[] data,
+                                          string filename, string mimeType)
     {
         for (int i = 0; i < data.Length; i += STREAM_SIZE)
         {
             var count = Math.Min(STREAM_SIZE, data.Length - i);
 
-            await responseStream.WriteAsync(new ImageStreamResponse
-            {
-                Filename = filename,
-                ContentType = mimeType,
-                Size = count,
-                Data = ByteString.CopyFrom(data, i, count)
-            });
+            await responseStream.WriteAsync(new ImageStreamResponse { Filename = filename, ContentType = mimeType,
+                                                                      Size = count,
+                                                                      Data = ByteString.CopyFrom(data, i, count) });
         }
     }
 }
