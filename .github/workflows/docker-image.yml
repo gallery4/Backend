@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: false
+          submodules: true
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
